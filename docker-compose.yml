@@ -104,7 +104,7 @@ services:
 
   rpcnode:
     << : *quorum-def
-    container_name: rpcnode
+    container_name: rpcnode-0
     ports:
       - 8545:8545/tcp
       - 8546:8546/tcp
@@ -121,8 +121,60 @@ services:
       quorum-dev-quickstart:
         ipv4_address: 172.16.239.15
 
+  member1quorum:
+    << : *quorum-def
+    ports:
+      - 20000:8545/tcp
+      - 20001:8546/tcp
+      - 30303
+      - 9545
+    environment:
+      - GOQUORUM_CONS_ALGO=${GOQUORUM_CONS_ALGO}
+      - GOQUORUM_GENESIS_MODE=standard
 
+    volumes:
+      - ./config/nodes/member1:/config/keys
+      - ./logs/quorum:/var/log/quorum/
+      - ./config/permissions:/permissions
+    networks:
+      quorum-dev-quickstart:
+        ipv4_address: 172.16.239.16
 
+  member2quorum:
+    << : *quorum-def
+    ports:
+      - 20002:8545/tcp
+      - 20003:8546/tcp
+      - 30303
+      - 9545
+    environment:
+      - GOQUORUM_CONS_ALGO=${GOQUORUM_CONS_ALGO}
+      - GOQUORUM_GENESIS_MODE=standard
+    volumes:
+      - ./config/nodes/member2:/config/keys
+      - ./logs/quorum:/var/log/quorum/
+      - ./config/permissions:/permissions
+    networks:
+      quorum-dev-quickstart:
+        ipv4_address: 172.16.239.17
+
+  member3quorum:
+    << : *quorum-def
+    ports:
+      - 20004:8545/tcp
+      - 20005:8546/tcp
+      - 30303
+      - 9545
+    environment:
+      - GOQUORUM_CONS_ALGO=${GOQUORUM_CONS_ALGO}
+      - GOQUORUM_GENESIS_MODE=enhanced
+    volumes:
+      - ./config/nodes/member3:/config/keys
+      - ./logs/quorum:/var/log/quorum/
+      - ./config/permissions:/permissions
+    networks:
+      quorum-dev-quickstart:
+        ipv4_address: 172.16.239.18
 
   explorer:
     image: consensys/quorum-explorer:${QUORUM_EXPLORER_VERSION:-latest}
